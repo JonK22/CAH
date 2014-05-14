@@ -2,43 +2,55 @@ import java.util.*;
 import java.net.*;
 import java.io.*;
 
+/**
+ * Main class to handle all game functionality.
+ * @author Master Kunk
+ *
+ */
 public class Game {
-	InetAddress ipAddy; // InetAddress referenced as ipAddy
-	int port = 29501; // @param port int setting the port that connections can be made on to 29500
-	String msg = ""; // @param msg String used to store the messages that are passing through the server
-	GamePlayer gp; // @param r Receive reference to the Class Receive
-	TopicSocket ts;
-	Vector<PrintWriter> printers = new Vector<PrintWriter>();
-	Vector<PrintWriter> tPrinters = new Vector<PrintWriter>();
-	Vector<String> blackCards = new Vector<String>();
-	Vector<String> whiteCards = new Vector<String>();
-	Vector<String> roundCards = new Vector<String>();
-	Hashtable<Integer, String> players = new Hashtable<Integer, String>();
-	int numPlaying = 1; // for final have this coming from a field in server
-	int hashPlayerLoc = 1;
-	public Game(){
+	InetAddress ipAddy; //IP Address of game server.
+	int port = 29501; //Port for the game server.
+	
+	Vector<String> blackCards = new Vector<String>();	//Available black cards.
+	Vector<String> whiteCards = new Vector<String>();	//Available white cards.
+	Vector<String> roundCards = new Vector<String>();	//Cards played in the round.
+	
+	Hashtable<Integer, Player> players = new Hashtable<Integer, Player>();	//Existing players.
+	
+	/**
+	 * Using the given number of players, start a new game. Loads
+	 * in the cards needed for the game from resources, then establishes
+	 * a socket to accept client connections.
+	 * 
+	 * @param	numberOfPlayers	The number of players in the game.
+	 */
+	public Game(int numberOfPlayers){
+		
+		//Load in cards for the game.
 		loadCards();
-		try {
+		
+		//Initialize the game server's IP.
+		try{
+			
 			ipAddy = InetAddress.getLocalHost();
-		} catch (UnknownHostException e1) {
-			e1.printStackTrace();
-		} // setting ipAddy to the local host ip address
-		String servInfo = ("Current IP address : " + ipAddy.getHostAddress() + " Port: " + port+"\n"); // print out the ipAddy and the listening port
+		}
+		catch(UnknownHostException uhe){
+			uhe.printStackTrace();
+		}
 		
-		
-		 try { // Starting the networking code, server socket created and then server accepts and passes to Receive threads
-			ServerSocket ss = new ServerSocket(port); // creating a server socket, ss, using the port
-			ServerSocket ssTs = new ServerSocket(port+1);
-			while(true){
-				Socket s = ss.accept();
-				gp = new GamePlayer(s);
-				Socket sts = ssTs.accept();// creating a socket , s , and setting it equal to a conenction using ss.accept
-				ts = new TopicSocket(sts);
+		//Accept connections to the game server.
+		try{ 
+			ServerSocket serverSocket = new ServerSocket(port);
+			
+			//Only accept connections up until the specified number of players.
+			for(int i=0;i<numberOfPlayers;i++){
+				Socket s = serverSocket.accept();
+				//TODO - Establish Player object for this connection.
 				
 			}
 		  } 
 		 catch(Exception e){
-			 // catch an error accepting a connection
+			 //TODO - catch an error accepting a connection
 		 }
 		
 	}
